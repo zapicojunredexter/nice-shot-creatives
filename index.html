@@ -199,6 +199,35 @@
             color: #000;
         }
 
+        /* Scroll Progress Bar */
+        .scroll-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.6) 0%, 
+                rgba(255, 255, 255, 0.9) 50%, 
+                rgba(255, 255, 255, 1) 100%);
+            transition: width 0.1s ease-out;
+            border-radius: 0 3px 0 0;
+            box-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.3),
+                0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Progress bar for light sections */
+        header.light-section .scroll-progress-bar {
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.4) 0%, 
+                rgba(0, 0, 0, 0.7) 50%, 
+                rgba(0, 0, 0, 0.9) 100%);
+            box-shadow: 
+                0 0 10px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
         /* Mobile Navigation */
         .mobile-menu-toggle {
             display: none;
@@ -1329,6 +1358,7 @@
                 <span>☰</span>
             </button>
         </nav>
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
     </header>
 
     <!-- Hero Section -->
@@ -1610,7 +1640,7 @@
             }
         }
 
-        // Parallax effect for video and header color update
+        // Parallax effect for video, header color update, and progress bar
         window.addEventListener('scroll', () => {
             if (heroVideo && heroVideo.classList.contains('loaded')) {
                 const scrolled = window.pageYOffset;
@@ -1620,10 +1650,26 @@
             
             // Update header color
             updateHeaderColor();
+            
+            // Update scroll progress bar
+            updateScrollProgress();
         });
 
-        // Initialize header color
+        // Update scroll progress bar
+        function updateScrollProgress() {
+            const scrollProgressBar = document.getElementById('scrollProgressBar');
+            if (!scrollProgressBar) return;
+            
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            scrollProgressBar.style.width = Math.min(scrollPercent, 100) + '%';
+        }
+
+        // Initialize header color and progress bar
         updateHeaderColor();
+        updateScrollProgress();
 
         // Mobile Menu Toggle
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
