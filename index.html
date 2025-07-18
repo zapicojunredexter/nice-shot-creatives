@@ -120,33 +120,30 @@
         .logo-text {
             font-size: 1.25rem;
             font-weight: 500;
-            color: white;
+            color: rgba(255, 255, 255, 0.8);
             font-family: 'Inter', sans-serif;
             letter-spacing: 0.3px;
             text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-text {
+            color: white;
         }
 
         header.light-section .logo-text {
-            color: white;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            color: rgba(0, 0, 0, 0.7);
+            text-shadow: 0 2px 8px rgba(255,255,255,0.3);
+        }
+
+        header.light-section .logo:hover .logo-text {
+            color: #000;
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.5rem;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-        }
-
-        header.light-section .nav-links {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 2rem;
         }
 
         .nav-links li {
@@ -154,66 +151,52 @@
         }
 
         .nav-links a {
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-weight: 500;
             font-family: 'Inter', sans-serif;
-            letter-spacing: 0.2px;
-            padding: 0.6rem 1.2rem;
-            border-radius: 20px;
+            letter-spacing: 0.3px;
+            padding: 0.5rem 0;
             position: relative;
             font-size: 0.9rem;
             display: block;
-            overflow: hidden;
         }
 
-        .nav-links a::before {
+        .nav-links a::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.08) 100%);
-            border-radius: 20px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: -1;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.8) 0%, 
+                rgba(255, 255, 255, 1) 100%);
+            transition: width 0.3s ease;
         }
 
         .nav-links a:hover {
             color: white;
-            text-shadow: 0 2px 8px rgba(255,255,255,0.2);
-            transform: translateY(-1px);
         }
 
-        .nav-links a:hover::before {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .nav-links a:active {
-            transform: translateY(0);
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Navigation colors for light sections */
         header.light-section .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(0, 0, 0, 0.7);
         }
 
-        header.light-section .nav-links a::before {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.2) 0%, 
-                rgba(255, 255, 255, 0.1) 100%);
+        header.light-section .nav-links a::after {
+            background: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.7) 0%, 
+                rgba(0, 0, 0, 1) 100%);
         }
 
         header.light-section .nav-links a:hover {
-            color: white;
-            text-shadow: 0 2px 8px rgba(255,255,255,0.3);
+            color: #000;
         }
 
         /* Mobile Navigation */
@@ -266,15 +249,20 @@
             .nav-links a {
                 display: block;
                 width: 100%;
-                padding: 0.75rem 1rem;
+                padding: 1rem 0;
                 font-size: 1rem;
                 text-align: center;
-                border-radius: 8px;
                 margin-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-links a::after {
+                display: none;
             }
 
             .nav-links a:hover {
-                background: rgba(255, 255, 255, 0.1);
+                background: none;
+                border-bottom-color: rgba(255, 255, 255, 0.3);
             }
 
             .mobile-menu-toggle {
@@ -292,10 +280,12 @@
 
             header.light-section .nav-links a {
                 color: rgba(0, 0, 0, 0.9);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             }
 
             header.light-section .nav-links a:hover {
-                background: rgba(0, 0, 0, 0.1);
+                background: none;
+                border-bottom-color: rgba(0, 0, 0, 0.3);
             }
 
             header.light-section .mobile-menu-toggle {
@@ -321,7 +311,7 @@
             }
 
             .nav-links a {
-                padding: 0.6rem 1rem;
+                padding: 0.8rem 0;
                 font-size: 0.95rem;
             }
         }
@@ -1585,20 +1575,10 @@
         
         function updateHeaderColor() {
             const scrolled = window.pageYOffset;
-            const aboutSection = document.querySelector('#about');
             const servicesSection = document.querySelector('#services');
+            const portfolioSection = document.querySelector('#portfolio');
             
             let isLightSection = false;
-            
-            // Check if we're in the about section (light gray background)
-            if (aboutSection) {
-                const aboutTop = aboutSection.offsetTop;
-                const aboutHeight = aboutSection.offsetHeight;
-                
-                if (scrolled >= aboutTop - 100 && scrolled <= aboutTop + aboutHeight) {
-                    isLightSection = true;
-                }
-            }
             
             // Check if we're in the services section (white background)
             if (servicesSection) {
@@ -1606,6 +1586,16 @@
                 const servicesHeight = servicesSection.offsetHeight;
                 
                 if (scrolled >= servicesTop - 100 && scrolled <= servicesTop + servicesHeight) {
+                    isLightSection = true;
+                }
+            }
+            
+            // Check if we're in the portfolio section (light gray background)
+            if (portfolioSection) {
+                const portfolioTop = portfolioSection.offsetTop;
+                const portfolioHeight = portfolioSection.offsetHeight;
+                
+                if (scrolled >= portfolioTop - 100 && scrolled <= portfolioTop + portfolioHeight) {
                     isLightSection = true;
                 }
             }
