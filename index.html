@@ -104,10 +104,6 @@
 
         /* Hero Section */
         .hero {
-            background: url('assets/cover.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -115,6 +111,19 @@
             text-align: left;
             color: white;
             position: relative;
+            overflow: hidden;
+            background: url('assets/cover.png') center/cover no-repeat;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            will-change: transform;
         }
 
         .hero::before {
@@ -125,11 +134,12 @@
             right: 0;
             bottom: 0;
             background: radial-gradient(ellipse at 20% 50%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
+            z-index: 2;
         }
 
         .hero-content {
             position: relative;
-            z-index: 1;
+            z-index: 3;
             max-width: 600px;
             margin-left: 5%;
             padding: 2.5rem;
@@ -640,6 +650,11 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="">
+            <source src="./assets/cover-video.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
+            <source src="assets/cover-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <div class="hero-content">
             <h1>Nice Shot Creatives</h1>
             <p>Visual Storytelling Through Photography</p>
@@ -815,6 +830,58 @@
                 const category = span ? span.textContent.replace(/\n/g, ' ') : 'Portfolio';
                 alert(`${category} gallery coming soon! Contact us to see our full ${category.toLowerCase()} portfolio.`);
             });
+        });
+
+        // Video setup
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.hero-video');
+            
+            if (video) {
+                video.addEventListener('error', () => {
+                    // Hide video on error, fallback to background image
+                    video.style.display = 'none';
+                });
+                
+                // Try to play video
+                const playVideo = () => {
+                    video.play().catch(() => {
+                        // If autoplay fails, try on user interaction
+                        document.addEventListener('click', () => {
+                            video.play().catch(() => {});
+                        }, { once: true });
+                    });
+                };
+                
+                // Try to play after load
+                if (video.readyState >= 3) {
+                    playVideo();
+                } else {
+                    video.addEventListener('canplay', playVideo, { once: true });
+                }
+            }
+        });
+
+        // Video parallax effect
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const video = document.querySelector('.hero-video');
+            const heroHeight = document.querySelector('.hero').offsetHeight;
+            
+            // Only apply parallax when video is visible
+            if (scrolled < heroHeight && video) {
+                const parallaxSpeed = 0.5;
+                video.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
+            }
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
         });
     </script>
 </body>
