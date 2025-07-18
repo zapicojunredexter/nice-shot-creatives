@@ -120,7 +120,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
         }
 
         .hero-content {
@@ -128,10 +128,12 @@
             z-index: 1;
             max-width: 600px;
             margin-left: 5%;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .hero-content h1 {
@@ -155,25 +157,26 @@
 
         .cta-button {
             display: inline-block;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.08);
             color: white;
             padding: 18px 40px;
             text-decoration: none;
-            border: 2px solid white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
             font-size: 1rem;
             font-weight: 300;
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
         }
 
         .cta-button:hover {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             color: black;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         /* Section Styles */
@@ -256,10 +259,11 @@
         .service-card {
             background: white;
             padding: 3rem 2rem;
-            border: 1px solid #eee;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -271,14 +275,15 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, #000, #333);
+            background: linear-gradient(90deg, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+            border-radius: 15px 15px 0 0;
             transform: scaleX(0);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
         }
 
         .service-card:hover::before {
@@ -319,20 +324,24 @@
         }
 
         .portfolio-item {
-            background: linear-gradient(135deg, #111 0%, #000 100%);
             height: 250px;
-            border-radius: 0;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 300;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
         }
 
         .portfolio-item::before {
@@ -342,18 +351,74 @@
             left: 0;
             right: 0;
             bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .portfolio-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 100%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+        }
+
+        .portfolio-item span {
+            position: relative;
+            z-index: 3;
+            text-align: center;
         }
 
         .portfolio-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
         }
 
         .portfolio-item:hover::before {
+            background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        .portfolio-item:hover::after {
             opacity: 1;
+        }
+
+        /* Individual portfolio backgrounds */
+        .portfolio-item:nth-child(1) {
+            background-image: url("assets/portfolio/wedding.png");
+        }
+
+        .portfolio-item:nth-child(2) {
+            background-image: url("assets/portfolio/portrait.png");
+        }
+
+        .portfolio-item:nth-child(3) {
+            background-image: url("assets/portfolio/family.png");
+        }
+
+        .portfolio-item:nth-child(4) {
+            background-image: url("assets/portfolio/corporate.png");
+        }
+
+        .portfolio-item:nth-child(5) {
+            background-image: url("assets/portfolio/newborn.png");
+        }
+
+        .portfolio-item:nth-child(6) {
+            background-image: url("assets/portfolio/graduation.png");
+        }
+
+        .portfolio-item:nth-child(7) {
+            background-image: url("assets/portfolio/commercial.png");
+        }
+
+        .portfolio-item:nth-child(8) {
+            background-image: url("assets/portfolio/special-events.png");
         }
 
         /* Contact Section */
@@ -498,7 +563,8 @@
                 margin-left: 0;
                 margin: 0 1rem;
                 max-width: 90%;
-                padding: 1.5rem;
+                padding: 2rem;
+                border-radius: 15px;
             }
 
             .hero-content h1 {
@@ -632,14 +698,30 @@
         <div class="container">
             <h2 class="section-title">Our Portfolio</h2>
             <div class="portfolio-grid">
-                <div class="portfolio-item">Wedding Collection</div>
-                <div class="portfolio-item">Portrait Gallery</div>
-                <div class="portfolio-item">Family Sessions</div>
-                <div class="portfolio-item">Corporate Events</div>
-                <div class="portfolio-item">Newborn Photography</div>
-                <div class="portfolio-item">Graduation Photos</div>
-                <div class="portfolio-item">Commercial Work</div>
-                <div class="portfolio-item">Special Events</div>
+                <div class="portfolio-item">
+                    <span>Wedding<br>Collection</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Portrait<br>Gallery</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Family<br>Sessions</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Corporate<br>Events</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Newborn<br>Photography</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Graduation<br>Photos</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Commercial<br>Work</span>
+                </div>
+                <div class="portfolio-item">
+                    <span>Special<br>Events</span>
+                </div>
             </div>
         </div>
     </section>
@@ -713,7 +795,9 @@
         // Portfolio item click handler
         document.querySelectorAll('.portfolio-item').forEach(item => {
             item.addEventListener('click', function() {
-                alert('Portfolio gallery coming soon! Contact us to see our full portfolio.');
+                const span = this.querySelector('span');
+                const category = span ? span.textContent.replace(/\n/g, ' ') : 'Portfolio';
+                alert(`${category} gallery coming soon! Contact us to see our full ${category.toLowerCase()} portfolio.`);
             });
         });
     </script>
