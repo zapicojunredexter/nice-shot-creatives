@@ -57,6 +57,7 @@
         .logo img {
             height: 40px;
             width: auto;
+            filter: brightness(0) invert(1);
         }
 
         .logo-text {
@@ -103,6 +104,100 @@
             width: 100%;
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .loading-screen.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            margin-bottom: 2rem;
+            animation: fadeInScale 1.5s ease-out;
+        }
+
+        .loading-logo-img {
+            height: 200px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid rgba(255, 255, 255, 0.8);
+            animation: spin 2s linear infinite;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-text {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .loading-progress {
+            margin-top: 1rem;
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
         /* Hero Section */
         .hero {
             height: 100vh;
@@ -113,7 +208,13 @@
             color: white;
             position: relative;
             overflow: hidden;
-            background: url('assets/cover.png') center/cover no-repeat;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            opacity: 0;
+            transition: opacity 1s ease-in 0.5s;
+        }
+
+        .hero.loaded {
+            opacity: 1;
         }
 
         .hero-video {
@@ -125,6 +226,12 @@
             object-fit: cover;
             z-index: 1;
             will-change: transform;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .hero-video.loaded {
+            opacity: 1;
         }
 
         .hero::before {
@@ -644,6 +751,18 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <img src="assets/logo.png" alt="Nice Shot Creatives" class="loading-logo-img">
+        </div>
+        <div class="loader"></div>
+        <div class="loading-text">Nice Shot Creatives</div>
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header>
         <nav class="container">
@@ -813,6 +932,92 @@
     </footer>
 
     <script>
+        // Loading Management
+        let loadingProgress = 0;
+        const loadingBar = document.getElementById('loadingBar');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const hero = document.querySelector('.hero');
+        const heroVideo = document.querySelector('.hero-video');
+        const loadingStartTime = Date.now();
+        const minimumLoadingTime = 2000; // 2 seconds minimum
+        let videoLoaded = false;
+
+        // Simulate loading progress
+        function updateLoadingProgress() {
+            loadingProgress += Math.random() * 12;
+            if (loadingProgress > 85) loadingProgress = 85;
+            loadingBar.style.width = loadingProgress + '%';
+        }
+
+        // Start loading simulation
+        const loadingInterval = setInterval(updateLoadingProgress, 250);
+
+        // Complete loading function
+        function completeLoading() {
+            const elapsedTime = Date.now() - loadingStartTime;
+            const remainingTime = Math.max(0, minimumLoadingTime - elapsedTime);
+            
+            // Complete progress bar
+            clearInterval(loadingInterval);
+            loadingProgress = 100;
+            loadingBar.style.width = '100%';
+            
+            // Wait for minimum time if needed
+            setTimeout(() => {
+                loadingScreen.classList.add('loaded');
+                hero.classList.add('loaded');
+                if (heroVideo) {
+                    heroVideo.classList.add('loaded');
+                    
+                    // Start video playback
+                    heroVideo.play().catch(() => {
+                        console.log('Autoplay prevented, will try on user interaction');
+                        document.addEventListener('click', () => {
+                            heroVideo.play().catch(() => {});
+                        }, { once: true });
+                    });
+                }
+            }, remainingTime + 500);
+        }
+
+        // Video loading handler
+        if (heroVideo) {
+            // Video events
+            heroVideo.addEventListener('loadstart', function() {
+                console.log('Video loading started');
+            });
+
+                        heroVideo.addEventListener('loadeddata', function() {
+                console.log('Video data loaded');
+                videoLoaded = true;
+                completeLoading();
+            });
+
+            heroVideo.addEventListener('canplaythrough', function() {
+                console.log('Video can play through');
+            });
+
+            heroVideo.addEventListener('error', function(e) {
+                console.error('Video error:', e);
+                // Handle video load error - show page anyway
+                videoLoaded = true;
+                completeLoading();
+            });
+        } else {
+            // No video found, complete loading after minimum time
+            videoLoaded = true;
+            completeLoading();
+        }
+
+        // Parallax effect for video
+        window.addEventListener('scroll', () => {
+            if (heroVideo && heroVideo.classList.contains('loaded')) {
+                const scrolled = window.pageYOffset;
+                const parallax = scrolled * 0.5;
+                heroVideo.style.transform = `translateY(${parallax}px)`;
+            }
+        });
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -842,57 +1047,7 @@
             });
         });
 
-        // Video setup
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('.hero-video');
-            
-            if (video) {
-                video.addEventListener('error', () => {
-                    // Hide video on error, fallback to background image
-                    video.style.display = 'none';
-                });
-                
-                // Try to play video
-                const playVideo = () => {
-                    video.play().catch(() => {
-                        // If autoplay fails, try on user interaction
-                        document.addEventListener('click', () => {
-                            video.play().catch(() => {});
-                        }, { once: true });
-                    });
-                };
-                
-                // Try to play after load
-                if (video.readyState >= 3) {
-                    playVideo();
-                } else {
-                    video.addEventListener('canplay', playVideo, { once: true });
-                }
-            }
-        });
 
-        // Video parallax effect
-        let ticking = false;
-        
-        function updateParallax() {
-            const scrolled = window.pageYOffset;
-            const video = document.querySelector('.hero-video');
-            const heroHeight = document.querySelector('.hero').offsetHeight;
-            
-            // Only apply parallax when video is visible
-            if (scrolled < heroHeight && video) {
-                const parallaxSpeed = 0.5;
-                video.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
-            }
-            ticking = false;
-        }
-        
-        window.addEventListener('scroll', function() {
-            if (!ticking) {
-                requestAnimationFrame(updateParallax);
-                ticking = true;
-            }
-        });
     </script>
 </body>
 </html> 
